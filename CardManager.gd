@@ -5,6 +5,7 @@ const COLLISION_MASK_CARD_SLOT = 2
 
 var screen_size
 var card_being_dragged
+var card_dragged_mouse_offset = 0
 var is_hovering_on_card
 var player_hand_reference
 
@@ -17,7 +18,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if card_being_dragged:
 		var mouse_pos = get_global_mouse_position()
-		card_being_dragged.position = Vector2(clamp(mouse_pos.x,0,screen_size.x), clamp(mouse_pos.y,0,screen_size.y))
+		card_being_dragged.position = Vector2(clamp(mouse_pos.x + card_dragged_mouse_offset.x,0,screen_size.x), clamp(mouse_pos.y +  + card_dragged_mouse_offset.y,0,screen_size.y))
 
 func _input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -30,6 +31,8 @@ func _input(event):
 				finish_drag()
 			
 func start_drag(card):
+	var mouse_pos = get_global_mouse_position()
+	card_dragged_mouse_offset = Vector2(card.position.x - mouse_pos.x, card.position.y - mouse_pos.y)
 	card_being_dragged = card
 	card.scale = Vector2(1,1)
 	
